@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.OrdersDAO">
+
+	<select id="getOrdersByCustomer" resultType="com.boot.dto.OrdersDTO">
+		SELECT * FROM orders WHERE customer_id = #{customer_id}
+	</select>
+	
+	<insert id="insertOrder" parameterType="com.boot.dto.OrdersDTO"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO orders (
+            partner_order_id,
+            customer_id,
+            total_quantity,
+            total_price,
+            delivery_address,
+            delivery_zipcode,
+            delivery_memo,
+            payment_method,
+            payment_status,
+            transaction_id,
+            friend_order_id,
+            posted,
+            order_date,
+            order_status
+        ) VALUES (
+            #{partner_order_id},
+            #{customer_id},
+            #{total_quantity},
+            #{total_price},
+            #{delivery_address},
+            #{delivery_zipcode},
+            #{delivery_memo},
+            #{payment_method},
+            #{payment_status},
+            #{transaction_id},
+            #{friend_order_id},
+            #{posted},
+            NOW(),
+            #{order_status}
+        )
+    </insert>
+
+    <insert id="insertOrderItem" parameterType="com.boot.dto.OrderItemDTO">
+        INSERT INTO order_items (
+            order_id,
+            product_id,
+            quantity,
+            sale_price
+        ) VALUES (
+            #{order_id},
+            #{product_id},
+            #{quantity},
+            #{sale_price}
+        )
+    </insert>
+    
+	<select id="selectOrderById" parameterType="int" resultType="com.boot.dto.OrdersDTO">
+        SELECT
+            id,
+            partner_order_id,
+            customer_id,
+            order_date,
+            order_status,
+            total_quantity,
+            total_price,
+            delivery_address,
+            delivery_zipcode,
+            delivery_memo,
+            payment_method,
+            payment_status,
+            transaction_id,
+            friend_order_id,
+            posted
+        FROM
+            orders
+        WHERE
+            id = #{orderId}
+    </select>
+
+    <select id="selectOrderItemsByOrderId" parameterType="int" resultType="com.boot.dto.OrderItemDTO">
+        SELECT
+            id,
+            order_id,
+            product_id,
+            quantity,
+            sale_price
+        FROM
+            order_items
+        WHERE
+            order_id = #{orderId}
+    </select>
+
+
+</mapper>

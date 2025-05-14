@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.CartDAO">
+
+<!--	<select id="findItem" resultType="com.boot.dto.CartDTO">-->
+	<select id="findItem" resultType="com.boot.dto.CartDTO">
+		SELECT * FROM cart WHERE user_id = #{user_id} and product_id = #{product_id}
+	</select>
+	
+	<insert id="insertCartItem" parameterType="com.boot.dto.CartDTO">
+		insert into cart(user_id, product_id, product_title, quantity) values(#{user_id},#{product_id},#{product_title},#{quantity})
+	</insert>
+	
+	<update id="updateQuantity" parameterType="com.boot.dto.CartDTO">
+		update cart set quantity=#{quantity} WHERE user_id = #{user_id} and product_id = #{product_id}
+	</update>
+	
+	<select id="getCartItems" resultType="com.boot.dto.CartDTO">
+		SELECT * FROM cart WHERE user_id = #{user_id}
+	</select>
+	
+	<select id="getCartItemsWithProduct" resultType="com.boot.dto.CartDTO">
+		select c.id, c.user_id, c.product_id, c.quantity, p.title As product_title, p.price, p.stock, p.picture, p.discount_percentage,
+		case when p.discount_percentage is not null
+		and p.discount_start &lt; now()
+		and p.discount_end &gt; now()
+		then floor(p.price * (1-(p.discount_percentage/100)))
+		else p.price
+		end as final_price
+		from cart c
+		join product p on c.product_id =p.id
+		where c.user_id =#{user_id}
+	</select>
+	
+	<insert id="orderSelectedItems">
+		insert into orders(customer_id, product_id, total_price)
+		select #{customer_id}, c.product_id, c.price
+		from cart c
+		where c.user_id = #{customer_id}
+		and c.id In
+		<foreach item="id" collection="selectedIds" open="(" separator="," close=")">
+		#{id}
+		</foreach>
+	</insert>
+	
+	<delete id="deleteSelectedItems">
+		delete from cart where user_id =#{user_id}
+		and id IN
+		<foreach item="id" collection="selectedIds" open="(" separator="," close=")">
+		#{id}
+		</foreach>
+	</delete>
+	
+		<delete id="deleteSoldOut">
+		delete from cart where user_id =#{user_id}
+		and product_id IN(
+			select id from product where stock = 0
+		)
+		
+	</delete>
+	
+	<select id="selectCartItemsByIds" resultType="com.boot.dto.CartDTO">
+	<![CDATA[
+	    SELECT
+	        c.id,
+	        c.user_id,
+	        c.product_id,
+	        p.title AS product_title,
+	        c.quantity,
+	        p.stock,
+	        p.price,
+	        CASE
+	            WHEN p.discount_start <= NOW() AND p.discount_end >= NOW()
+	            THEN p.price - (p.price * p.discount_percentage / 100)
+	            ELSE p.price
+	        END AS final_price,
+	        p.discount_percentage
+	    FROM
+	        cart c
+	    JOIN
+	        product p ON c.product_id = p.id
+	    WHERE
+	        c.id IN
+	        ]]>
+	        <foreach item="cartItemId" collection="cartItemIds" open="(" separator="," close=")">
+	            #{cartItemId}
+	        </foreach>
+	        <![CDATA[
+	    AND c.user_id = #{userId}
+	    ]]>
+	</select>
+
+</mapper>

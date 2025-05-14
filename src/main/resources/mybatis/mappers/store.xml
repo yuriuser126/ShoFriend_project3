@@ -1,0 +1,38 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.boot.dao.StoreDAO">
+<!--  판매자 점포 리스트, 화면, 수정, 삭제  -->
+		<select id="store_list" resultType="com.boot.dto.StoreDTO"> 
+		select id, seller_id, name, description, zipcode, address, address1, created_at from store where seller_id=#{seller_id}
+		 </select>
+		 
+		<select id="store_view" resultType="com.boot.dto.StoreDTO"> 
+		select id, seller_id, name, description, zipcode, address, address1, created_at from store where id=#{id}
+		</select>
+
+		 <update id="store_modify">
+		 update store set name=#{name}, description=#{description}, zipcode=#{zipcode}, address=#{address}, address1=#{address1} where id=#{id}
+		 </update>
+		 
+		<update id="store_delete"> 
+		delete from store where id=#{id} 
+		</update>
+		
+		<!--  	점포 등록 인서트  -->
+		<insert id="store_write"> insert into store(seller_id, name, description, zipcode, address, address1) values(#{seller_id},#{name},#{description},#{zipcode},#{address},#{address1}) </insert>
+		
+		<select id="getStoreNameById" parameterType="int" resultType="string">
+		  SELECT name FROM store WHERE id = #{storeId}
+		</select>
+		
+		<select id="getStoresBySellerId" parameterType="int" resultType="com.boot.dto.StoreDTO">
+		    SELECT * FROM store WHERE seller_id = #{sellerId}
+		</select>
+		
+	    <select id="getProductsByStoreId" parameterType="int" resultType="com.boot.dto.ProductDTO">
+	        SELECT * FROM product WHERE store_id = #{storeId}
+	    </select>
+		
+		</mapper>
+		

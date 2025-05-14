@@ -1,0 +1,53 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.boot.dao.ReviewDAO">
+
+	<!-- 리뷰 등록 -->
+	<insert id="insertReview" parameterType="com.boot.dto.ReviewDTO">
+		INSERT INTO review (product_id, customer_id, title, content, rating)
+		VALUES (#{productId}, #{customerId}, #{title}, #{content}, #{rating})
+	</insert>
+	
+	<!-- 상품별 리뷰 전체 조회 -->
+<!--	<select id="getReviews" resultType="com.boot.dto.ReviewDTO">-->
+<!--		SELECT * FROM review-->
+<!--		WHERE product_id = #{productId}-->
+<!--		ORDER BY created_at DESC-->
+<!--	</select>-->
+	
+	<!--	join을 통해 customerId 를 가져오도록 쿼리 수정	-->
+	<select id="getReviews" parameterType="int" resultType="com.boot.dto.ReviewDTO">
+		SELECT 
+			r.id,
+			r.product_id,
+			r.customer_id,
+			r.title,
+			r.content,
+			r.rating,
+			r.created_at,
+			c.name AS customerName
+		FROM review r
+		JOIN customer c ON r.customer_id = c.id
+		WHERE r.product_id = #{productId}
+		ORDER BY r.created_at DESC
+	</select>
+
+
+	<!-- 별점별 갯수 조회 -->
+	<select id="getRatingCounts" resultType="map">
+		SELECT rating, COUNT(*) AS count
+		FROM review
+		WHERE product_id = #{productId}
+		GROUP BY rating
+	</select>
+
+	<!-- 평균 별점 조회 -->
+	<select id="getAverageRating" resultType="double">
+		SELECT ROUND(AVG(rating), 2)
+		FROM review
+		WHERE product_id = #{productId}
+	</select>	
+	
+</mapper>

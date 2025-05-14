@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.FriendDAO">
+    <select id="findByEmail" parameterType="string" resultType="com.boot.dto.CustomerDTO">
+    	SELECT id, email, name FROM customer WHERE email = #{email}
+	</select>
+	
+	<insert id="insertFriend" parameterType="map">
+	    INSERT INTO friend (customer_id1, customer_id2, status)
+	    VALUES (#{customer_id1}, #{customer_id2}, #{status})
+	</insert>
+
+	<select id="findpending" parameterType="map" resultType="com.boot.dto.CustomerDTO">
+		SELECT f.customer_id1 AS id, c.name, c.email
+		  FROM friend f
+		  JOIN customer c ON f.customer_id1 = c.id
+		 WHERE f.customer_id2 = #{id} AND f.status = 'pending';
+	</select>
+	
+	<update id="updateFriendStatus" parameterType="map">
+	    UPDATE friend
+	    SET status = 'accepted'
+	    WHERE customer_id1 = #{customer_id1}
+	      AND customer_id2 = #{customer_id2}
+	</update>
+	
+	<select id="getAcceptedFriends" parameterType="int" resultType="com.boot.dto.CustomerDTO">
+	    SELECT c.id, c.name, c.email
+	    FROM friend f
+	    JOIN customer c 
+	      ON (f.customer_id1 = #{id} AND f.customer_id2 = c.id)
+	      OR (f.customer_id2 = #{id} AND f.customer_id1 = c.id)
+	    WHERE f.status = 'accepted'
+	</select>
+	
+	<delete id="rejectFriend" parameterType="map">
+	  DELETE FROM friend 
+	  WHERE customer_id1 = #{customer_id1} 
+	    AND customer_id2 = #{customer_id2} 
+	    AND status = 'pending'
+	</delete>
+	
+	<delete id="deleteFriend" parameterType="map">
+	  DELETE FROM friend 
+	  WHERE customer_id1 = #{customer_id1} AND customer_id2 = #{customer_id2}
+	</delete>
+	
+	<select id="getFriendRecentOrders" parameterType="int" resultType="java.util.Map">
+        SELECT
+            o.id AS order_id,
+            o.order_date,
+            o.customer_id,
+            oi.product_id
+        FROM
+            orders o
+        JOIN
+            order_items oi ON o.id = oi.order_id
+        JOIN
+            friend f ON (o.customer_id = f.customer_id1 OR o.customer_id = f.customer_id2)
+        WHERE
+            (f.customer_id1 = #{currentCustomerId} OR f.customer_id2 = #{currentCustomerId})
+            AND o.customer_id != #{currentCustomerId}
+            AND f.status = 'accepted'
+        ORDER BY
+            o.order_date DESC
+        LIMIT 1
+    </select>
+	
+	
+</mapper>

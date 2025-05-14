@@ -1,0 +1,30 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!--  * 추상클래스 로그인 서비스 sql  -->
+<!--  * 25.04.08 성유리 로그인 dao.xml   -->
+<!--  * 25.04.10 권준우 - 쿼리 수정 :  where email=#{email} and password=#{password}  -->
+<!--  *25.04.10 성유리 쿼리문 추가  -->
+<!--  *25.04.11 성유리 Regimapper 추가 수정 -->
+<!--  *25.04.08 김채윤 Regimapper 추가  -->
+<mapper namespace="com.boot.dao.LogDAO">
+	<select id="loginYn" resultType="com.boot.dto.CustomerDTO"> select id, name, email, password, phone, address, address1, zipcode, created_at from customer where email=#{email} and password=#{password} </select>
+	<select id="loginYns" resultType="com.boot.dto.SellerDTO"> select id, name, email, password, phone, created_at from seller where email=#{email} and password=#{password} </select>
+	<select id="searchId" resultType="com.boot.dto.CustomerDTO"> select email from customer where name=#{name} </select>
+	<select id="doFindId" resultType="com.boot.dto.CustomerDTO"> select email from customer where name=#{name} </select>
+	<select id="searchIds" resultType="com.boot.dto.SellerDTO"> select email from seller where name=#{name} </select>
+	<select id="doFindIds" resultType="com.boot.dto.SellerDTO"> select email from seller where name=#{name} </select>
+	<select id="searchPw" resultType="com.boot.dto.CustomerDTO"> select password from customer where name=#{name} and email=#{email} </select>
+	<select id="doFindPw" resultType="com.boot.dto.CustomerDTO"> select password from customer where name=#{name} and email=#{email} </select>
+	<select id="searchPws" resultType="com.boot.dto.SellerDTO"> select password from seller where name=#{name} and email=#{email} </select>
+	<select id="doFindPws" resultType="com.boot.dto.SellerDTO"> select password from seller where name=#{name} and email=#{email} </select>
+	<!--   *25.04.08 김채윤 Regimapper 추가   -->
+	<!--   	일반회원 가입 인서트   -->
+	<insert id="write"> insert into customer(name, email, password, phone, address, zipcode, address1) values(#{name},#{email},#{password},#{phone},#{address},#{zipcode},#{address1}) </insert>
+	<!--   	판매자 가입 인서트   -->
+	<insert id="sell_write"> insert into seller(name, email, password, phone) values(#{name},#{email},#{password},#{phone}) </insert>
+	<!--       일반 유저 이메일 중복 검사   -->
+	<select id="emailCheck" parameterType="String" resultType="int"> select count(email) from customer where email=#{email} </select>
+</mapper>

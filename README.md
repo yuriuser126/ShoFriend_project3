@@ -68,9 +68,11 @@
 
 ## 🔗 관련 링크
 
-  * **GitHub Repository:** [GitHub Repository URL] (추후 업데이트 예정)
-  * **API 문서:** [API 문서 URL] (추후 업데이트 예정)
-  * **Jira 프로젝트:** [Jira 프로젝트 URL] (추후 업데이트 예정)
+ * **GitHub Repository:** [-GitHub Repository URL](https://github.com/yuriuser126/ShoFriend_project3.git) 
+  * **API 문서:** [카카오페이 API URL](https://developers.kakaopay.com/)
+  * **Jira 프로젝트:** [[Jira 프로젝트 URL](https://khproject3.atlassian.net/)]
+  * **Slack 채널:** [[Slack 채널 URL](https://khproject3hq.slack.com/)] 
+
   * **Slack 채널:** [ <a href="https://khproject3hq.slack.com/archives/C08R5NN55JR"> Slack 채널 URL </a>] (6/4일까지 열람가능)
 
 ## 🤝 기여 방법

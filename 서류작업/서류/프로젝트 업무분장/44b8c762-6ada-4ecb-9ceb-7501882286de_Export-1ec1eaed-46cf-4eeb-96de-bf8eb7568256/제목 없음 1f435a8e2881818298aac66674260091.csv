@@ -1,0 +1,80 @@
+﻿프로젝트 임무 분담,담당자,세부사항
+프로젝트 재 기획,전원,
+"업무 분장 작성 ",성유리,
+업무 흐름도 작성,성유리,
+메뉴 구조도 작성,성유리,
+테이블 재설계 / ERD 작성,권준우,
+테이블 명세서 작성,김채윤,
+화면 설계서 작성,권준우,
+회원(구매자) 채팅 기능,권준우,웹소켓 이용 / 채팅기능
+카테고리 페이지 (카테고리별 페이징 및 정렬),권준우,디버깅 및 UI / 리뷰별점 / 페이
+회원(구매자) 상품 구매 (카카오페이),우주연,카카오 페이 사용
+"회원(구매자) 상품 장바구니 페이지 ","김채윤, 성유리",장바구니 / 결제 UI 개선
+회원(구매자) 상품 주문목록 페이지,우주연,주문한 상품의 값 select
+판매자 점포 별 상품목록 페이지,우주연,점포별 상품 값 select
+주간 보고서 작성,성유리,
+프론트 작업,"김채윤, 성유리, 우주연","프론트 틀 도입 → 유리
+—목록—
+chat
+> chat_friend
+
+log
+> customer_login
+> customer_register
+>do_find_id
+>do_find_ids
+>do_find_pw
+>do_find_pws
+>find_id
+>find_ids
+>find_pw
+>find_pws
+>login
+> seller_login
+> seller_register
+
+pay
+>cancel
+>checkout
+>detail
+>fail
+>success
+
+another(가장 바깥)
+>cart_view
+>category
+>check_pwd
+>content
+>customer_info
+>friend
+>main
+>my_page
+>order_view
+>product_insert
+>product_modify
+>seller_info
+>store_list
+>store_register
+>store_view_product
+>store_view
+>update_pwd
+
+—헤더 및 푸터——-
+초기 header+footer → 유리
+seller,customer 별 리디자인 → 채윤
+총체적 header + footer → 주연
+main → 주연
+——-
+another → 채윤
+——-
+chat , log , pay 
+another(cartegory,cart_view,friend) → 유리
+——-
+전체적 정리 및 통합
+채윤(another) , 유리(나머지) , 주연(main friend ) → 전반적으로 다 둘러서 행함"
+가게 별 관리자 기능 추가,우주연,가게 상품 관리 기능 구현/ 가게 정보 수정 및 삭제기능 구현
+프로그램 기술서 작성,권준우,
+ppt 제작,우주연,
+깃허브 업로드,우주연,
+협업 툴 사용 (jira + slack),전원,
+source tree 사용,전원,

@@ -71,7 +71,7 @@
   * **GitHub Repository:** [GitHub Repository URL] (추후 업데이트 예정)
   * **API 문서:** [API 문서 URL] (추후 업데이트 예정)
   * **Jira 프로젝트:** [Jira 프로젝트 URL] (추후 업데이트 예정)
-  * **Slack 채널:** [Slack 채널 URL] (추후 업데이트 예정)
+  * **Slack 채널:** [ <a href="https://khproject3hq.slack.com/archives/C08R5NN55JR">] (6/4일까지 열람가능)
 
 ## 🤝 기여 방법
 

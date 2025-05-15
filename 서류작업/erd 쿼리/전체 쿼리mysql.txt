@@ -1,0 +1,145 @@
+[ERD 제작에 사용한 전체 TABLE CREATE 쿼리]
+-- 1. CUSTOMER
+CREATE TABLE customer (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  address1 VARCHAR(200),
+  zipcode INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+-- 2. SELLER
+CREATE TABLE seller (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+-- 3. STORE
+CREATE TABLE store (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  seller_id INT UNIQUE,
+  name VARCHAR(100) NOT NULL,
+  description TEXT NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  address1 VARCHAR(200),
+  zipcode VARCHAR(7),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_store_seller FOREIGN KEY (seller_id)
+    REFERENCES seller(id) ON DELETE CASCADE
+);
+-- 4. CATEGORY
+CREATE TABLE category (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) UNIQUE NOT NULL
+);
+-- 5. PRODUCT
+CREATE TABLE product (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  store_id INT NOT NULL,
+  category_id INT,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  price INT NOT NULL,
+  stock INT NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  picture VARCHAR(50),
+  recommend INT NOT NULL DEFAULT 0,
+  discount_start DATETIME DEFAULT NULL,
+  discount_end DATETIME DEFAULT NULL,
+  discount_percentage DECIMAL(5,2) DEFAULT 0 CHECK (discount_percentage BETWEEN 0 AND 100),
+  CONSTRAINT fk_product_store FOREIGN KEY (store_id)
+    REFERENCES store(id) ON DELETE CASCADE,
+  CONSTRAINT fk_product_category FOREIGN KEY (category_id)
+    REFERENCES category(id) ON DELETE SET NULL
+);
+-- 6. FRIEND
+CREATE TABLE friend (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  customer_id1 INT NOT NULL,
+  customer_id2 INT NOT NULL,
+  status ENUM('pending', 'accepted', 'blocked'),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT uq_friend_pair UNIQUE (customer_id1, customer_id2),
+  CONSTRAINT fk_friend_customer1 FOREIGN KEY (customer_id1)
+    REFERENCES customer(id) ON DELETE CASCADE,
+  CONSTRAINT fk_friend_customer2 FOREIGN KEY (customer_id2)
+    REFERENCES customer(id) ON DELETE CASCADE
+);
+-- 7. ORDER
+CREATE TABLE orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  partner_order_id VARCHAR(255) NOT NULL UNIQUE,
+  customer_id INT NOT NULL,
+  order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  order_status ENUM('pending', 'paid', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending',
+  total_quantity INT NOT NULL DEFAULT 1,
+  total_price INT NOT NULL,
+  delivery_address VARCHAR(255),
+  delivery_zipcode VARCHAR(10),
+  delivery_memo VARCHAR(255),
+  payment_method VARCHAR(50),
+  payment_status VARCHAR(50),
+  transaction_id VARCHAR(255),
+  friend_order_id INT,
+  posted INT,
+  FOREIGN KEY (customer_id) REFERENCES customer(id) ON DELETE CASCADE,
+  FOREIGN KEY (friend_order_id) REFERENCES friend(id)
+);
+-- 8. ORDER_ITEMS
+CREATE TABLE order_items (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL DEFAULT 1,
+  sale_price INT NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
+);
+-- 9. CHAT
+CREATE TABLE chat (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  sender_id VARCHAR(50) NOT NULL,
+  receiver_id VARCHAR(50) NOT NULL,
+  message TEXT NOT NULL,
+  sent_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (sender_id) REFERENCES customer(id) ON DELETE CASCADE
+);
+-- 10. CART
+CREATE TABLE cart(
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  product_id INT,
+  product_title VARCHAR(255),
+  quantity INT,
+  FOREIGN KEY (user_id) REFERENCES customer(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
+);
+-- 11. REVIEW
+CREATE TABLE review (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  product_id INT NOT NULL,
+  customer_id INT NOT NULL,
+  title VARCHAR(100) NOT NULL,
+  content TEXT NOT NULL,
+  rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,
+  FOREIGN KEY (customer_id) REFERENCES customer(id) ON DELETE CASCADE
+);
+---
+주석 빼면서 양식 적당히 통일시키고, 제가 보기에 FK제약 누락되어있다고 판단되는건 추가했습니다.
+:+1:
+1
+
+
+
+
+
+
+
